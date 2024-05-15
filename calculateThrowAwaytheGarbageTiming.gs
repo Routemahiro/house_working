@@ -18,7 +18,7 @@ function calculateGarbageDay(date) {
     switch (dayOfWeek) {
         case 1: // 月曜日
         case 4: // 木曜日
-            return '燃焼ゴミ';
+            return '燃えるゴミ';
         case 5: // 金曜日
             if (weekOfMonth === 1) {
                 return '有害危険ゴミと小型複雑ゴミ';
@@ -32,3 +32,27 @@ function calculateGarbageDay(date) {
     return '今日はゴミ捨て日ではありません';
 }
 
+function checkAndNotifyGarbageDay() {
+    const today = new Date();
+    const garbageType = calculateGarbageDay(today);
+
+    if (garbageType !== '今日はゴミ捨て日ではありません') {
+        sendLineMessage(GROUP_ID, {
+            type: 'text',
+            text: `${garbageType}の日です。ゴミを出してください。`
+        });
+    }
+}
+
+function checkAndNotifyGarbageDayReminder() {
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1); // 明日の日付を取得
+    const garbageType = calculateGarbageDay(tomorrow);
+
+    if (garbageType !== '今日はゴミ捨て日ではありません') {
+        sendLineMessage(GROUP_ID, {
+            type: 'text',
+            text: `${garbageType}の前日です。ゴミ捨て準備を行いましょう。`
+        });
+    }
+}
