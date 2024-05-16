@@ -1,7 +1,5 @@
-// 定数
-const LINE_API_URL = 'https://api.line.me/v2/bot/message/push';
-const LINE_TOKEN = PropertiesService.getScriptProperties().getProperty('LINE_TOKEN');
-const GROUP_ID = PropertiesService.getScriptProperties().getProperty('GROUP_ID');
+
+
 
 // sendLineMessage関数
 function sendLineMessage(targetId, message) {

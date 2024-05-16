@@ -1,5 +1,4 @@
-// LINE developers記載のアクセストークン
-var ACCESS_TOKEN = PropertiesService.getScriptProperties().getProperty('LINE_TOKEN');
+
 
 // function doPost(e) {
 //   // ----- 送られてきた値をパース -----
