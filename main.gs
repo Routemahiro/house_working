@@ -12,23 +12,35 @@ const GROUP_ID = PropertiesService.getScriptProperties().getProperty('GROUP_ID')
 const OPENAI_API_TOKEN = PropertiesService.getScriptProperties().getProperty('OPENAI_API');
 
 function doPost(e) {
-  // リクエストの内容をJSONオブジェクトにパース
-  var json = JSON.parse(e.postData.contents);
-  // スプレッドシートにログを記録する関数を呼び出す
   sendLineMessage(GROUP_ID, {
-  type: 'text',
-  text: "オウム返し：" + json.events[0].message.text,
-});
+    type: 'text',
+    text: "test",
+  });
+  try {
 
-  var text = requestGpt4Completion(json.events[0].message.text);
-  sendLineMessage(GROUP_ID, {
-  type: 'text',
-  text: text,
-});
+    logMessageToSheet(e);
+    // リクエストの内容をJSONオブジェクトにパース
+    var json = JSON.parse(e.postData.contents);
+    logMessageToSheet(json);
+    // スプレッドシートにログを記録する関数を呼び出す
+    sendLineMessage(GROUP_ID, {
+      type: 'text',
+      text: "オウム返し：" + json.events[0].message.text,
+    });
 
+    var text = requestGpt4Completion(json.events[0].message.text);
+    sendLineMessage(GROUP_ID, {
+      type: 'text',
+      text: text,
+    });
+  } catch (error) {
+    // エラー内容をLINEで送信
+    sendLineMessage(GROUP_ID, {
+      type: 'text',
+      text: "エラーが発生しました: " + error.message,
+    });
+  }
 }
-
-
 
 function logMessageToSheet(json) {
   var ss = SpreadsheetApp.openById(SPREAD_SHEET_ID);
