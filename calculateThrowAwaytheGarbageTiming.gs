@@ -56,3 +56,17 @@ function checkAndNotifyGarbageDayReminder() {
         });
     }
 }
+
+function testCalculateGarbageDayFull() {
+    for (let month = 3; month < 5; month++) { // 1月から3月
+        let year = 2024;
+        let daysInMonth = new Date(year, month + 1, 0).getDate(); // その月の日数を取得
+
+        for (let day = 1; day <= daysInMonth; day++) {
+            let date = new Date(year, month, day);
+            console.log(`日付: ${date.toLocaleDateString('ja-JP')} - ゴミの種類: ${calculateGarbageDay(date)}`);
+        }
+    }
+}
+
+testCalculateGarbageDayFull();

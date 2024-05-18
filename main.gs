@@ -12,10 +12,7 @@ const GROUP_ID = PropertiesService.getScriptProperties().getProperty('GROUP_ID')
 const OPENAI_API_TOKEN = PropertiesService.getScriptProperties().getProperty('OPENAI_API');
 
 function doPost(e) {
-  sendLineMessage(GROUP_ID, {
-    type: 'text',
-    text: "test",
-  });
+
   try {
 
     logMessageToSheet(e);
@@ -34,11 +31,13 @@ function doPost(e) {
       text: text,
     });
   } catch (error) {
-    // エラー内容をLINEで送信
+    // エラー内容をLINEで送信し、コンソールにもログを出力
+    const errorMessage = "エラーが発生しました: " + error.message;
+    console.error(errorMessage);
     sendLineMessage(GROUP_ID, {
       type: 'text',
-      text: "エラーが発生しました: " + error.message,
-    });
+      text: errorMessage,
+    });    
   }
 }
 
