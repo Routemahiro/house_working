@@ -37,7 +37,7 @@ function checkAndNotifyGarbageDay() {
     const garbageType = calculateGarbageDay(today);
 
     if (garbageType !== '今日はゴミ捨て日ではありません') {
-        sendLineMessage(GROUP_ID, {
+        sendLineMessage(HOUSE_GROUP_ID, {
             type: 'text',
             text: `${garbageType}の日です。ゴミを出してください。`
         });
@@ -50,7 +50,7 @@ function checkAndNotifyGarbageDayReminder() {
     const garbageType = calculateGarbageDay(tomorrow);
 
     if (garbageType !== '今日はゴミ捨て日ではありません') {
-        sendLineMessage(GROUP_ID, {
+        sendLineMessage(HOUSE_GROUP_ID, {
             type: 'text',
             text: `${garbageType}の前日です。ゴミ捨て準備を行いましょう。`
         });
