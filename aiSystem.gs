@@ -1,10 +1,11 @@
+// ドキュメント：https://platform.openai.com/docs/api-reference/introduction
+
 function requestGpt4Completion(inputText) {
   const timeoutMs = 60000;  // 例: 60秒
   // スクリプトプロパティに設定したOpenAIのAPIキーを取得
     
   // GPT-4のAPIのエンドポイントを設定
   const apiUrl = 'https://api.openai.com/v1/chat/completions';
-  
   // GPT-4に投げるメッセージを定義（ユーザーロールの投稿文のみ）
   const messages = [{'role': 'user', 'content': inputText}];  
   

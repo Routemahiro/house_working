@@ -9,19 +9,21 @@ const LINE_TOKEN = PropertiesService.getScriptProperties().getProperty('LINE_TOK
 var ACCESS_TOKEN = PropertiesService.getScriptProperties().getProperty('LINE_TOKEN');
 const SPREAD_SHEET_ID = PropertiesService.getScriptProperties().getProperty('SPREAD_SHEET_ID');
 const HOUSE_GROUP_ID = PropertiesService.getScriptProperties().getProperty('HOUSE_GROUP_ID');
+const BABY_GROUP_ID = PropertiesService.getScriptProperties().getProperty('BABY_GROUP_ID');
 // テスト用グループID
 // const HOUSE_GROUP_ID = PropertiesService.getScriptProperties().getProperty('HOUSE_GROUP_ID_TEST');
 
-const BABY_GROUP_ID = PropertiesService.getScriptProperties().getProperty('BABY_GROUP_ID');
 
 const OPENAI_API_TOKEN = PropertiesService.getScriptProperties().getProperty('OPENAI_API');
+
 
 function doPost(e) {
   try {
     var contents = JSON.parse(e.postData.contents);
     var events = contents.events;
-
+    var spreadSheetName = '';
     var userId, message, groupId, timestamp, messageType;
+
     events.forEach(function(event) {
       if (event.type === 'message') {
         userId = event.source.userId;
@@ -33,17 +35,34 @@ function doPost(e) {
     });
 
     if (groupId === HOUSE_GROUP_ID) {
+      spreadSheetName = 'お家ルーム';
       sendLineMessage(groupId, {
         // 家事ルーム
         type: 'text',
         text: "るーむ：お家ルーム",
       });
+
     } else if (groupId === BABY_GROUP_ID) {
       // Babyルーム
+      spreadSheetName = 'ベビールーム';
+      babyData = loadBabyData(); // babyData.name babyData.birthDay mother_name father_name daysSinceBirth today でデータの呼び出し可能
+
+      // spreadSheetNameからログを呼び出す
+      var babyLog = loadBabyLog(spreadSheetName);
+      var babyName = babyData.name;
+      var babyBirthDay = babyData.birthDay
+      var babyMotherName = babyData.mother_name;
+      var babyFatherName = babyData.father_name;
+      var babyDaysSinceBirth = babyData.daysSinceBirth;
+      var babyToday = babyData.today;
+
+      // 
       sendLineMessage(groupId, {
         type: 'text',
-        text: "るーむ：ベビールーム",
+        // text: "赤ちゃんの名前:" + babyName + "\n" + "赤ちゃんの誕生日:" + babyBirthDay + "\n" + "赤ちゃんの母:" + babyMotherName + "\n" + "赤ちゃんの父:" + babyFatherName + "\n" + "本日の日付:" + babyToday + "\n" + "赤ちゃんの誕生日:" + babyDaysSinceBirth,
+        text: "ログ：" + babyLog,
       });
+      // logMessageToSheet(spreadSheetName, timestamp, userId, groupId, messageType, message);
     } else {
       sendLineMessage(groupId, {
         type: 'text',
@@ -55,6 +74,8 @@ function doPost(e) {
     console.error(error);
   }
 }
+
+
 
 // function doPost(e) {
   
@@ -101,18 +122,7 @@ function doPost(e) {
 //   }
 // }
 
-// function logMessageToSheet(timestamp, userId, groupId, messageType, message) {
-//   var ss = SpreadsheetApp.openById(SPREAD_SHEET_ID);
-//   var sheet = ss.getSheetByName('Messages'); // 'Messages'という名前のシートを使用
-//   if (!sheet) {
-//     sheet = ss.insertSheet('Messages');
-//     sheet.appendRow(['Date', 'GroupId', 'UserId', 'MessageType', 'Message']); // 列名を設定
-//   }
-  
-//   if (messageType === 'text') {
-//     sheet.appendRow([timestamp, groupId, userId, messageType, message]);
-//   }
-// }
+
 
 
 
