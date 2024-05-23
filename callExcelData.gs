@@ -33,9 +33,11 @@ function logMessageToSheet(sheetname,timestamp, userId, groupId, messageType, me
     var sheet = ss.getSheetByName(sheetname);
     var data = sheet.getDataRange().getValues();
     var filteredData = [];
-  
+    var today = Utilities.formatDate(new Date(), 'JST', 'yyyy/MM/dd');
+
     for (var i = 1; i < data.length; i++) {
-      if (data[i][4] !== '') { // E列が空白でない場合
+      var dataDate = Utilities.formatDate(new Date(data[i][0]), 'JST', 'yyyy/MM/dd');
+      if (data[i][4] !== '' && dataDate === today) { // E列が空白でなく、かつ日付が今日の場合
         filteredData.push([Utilities.formatDate(new Date(data[i][0]), 'JST', 'yyyy/MM/dd HH:mm'), data[i][4]]); // A列、E列の値を取得
       };
     }
