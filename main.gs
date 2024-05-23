@@ -56,11 +56,12 @@ function doPost(e) {
       var babyDaysSinceBirth = babyData.daysSinceBirth;
       var babyToday = babyData.today;
 
-      // 
+      var onedaySummary = requestGpt4Completion("あなたは以下に送付するログを元に、朝/昼/夜の枠組みごとに何があったかわかるように端的に要約してください。返答内容は要約した文章のみとしてください\n\n" + babyLog);
+      var diary = requestGpt4Completion("以下の要約文を利用して、300文字前後の日記を作成してください。この日記は父母が見ます。赤ちゃんの成長を観察するのに適した内容にするとともに、父母が見て気持ちが明るくなるようにしてください。また、要約文から授乳/排泄/睡眠に難がある可能性が見受けられた場合は、その旨の注釈を日記の最後に入れてください\n\n" + onedaySummary);
       sendLineMessage(groupId, {
         type: 'text',
         // text: "赤ちゃんの名前:" + babyName + "\n" + "赤ちゃんの誕生日:" + babyBirthDay + "\n" + "赤ちゃんの母:" + babyMotherName + "\n" + "赤ちゃんの父:" + babyFatherName + "\n" + "本日の日付:" + babyToday + "\n" + "赤ちゃんの誕生日:" + babyDaysSinceBirth,
-        text: "ログ：" + babyLog,
+        text: "要約を基にした日記：" + diary,
       });
       // logMessageToSheet(spreadSheetName, timestamp, userId, groupId, messageType, message);
     } else {
