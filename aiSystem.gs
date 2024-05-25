@@ -11,7 +11,7 @@ function requestGpt4Completion(inputText) {
   
   // OpenAIのAPIリクエストに必要なヘッダー情報を設定
   const headers = {
-    'Authorization':'Bearer ' + OPENAI_API_TOKEN,
+    'Authorization':'Bearer ' + getOpenAiApiToken(),
     'Content-type': 'application/json'
   };
   

@@ -1,6 +1,3 @@
-
-
-
 // sendLineMessage関数
 function sendLineMessage(targetId, message) {
   // パラメータバリデーション
@@ -13,7 +10,7 @@ function sendLineMessage(targetId, message) {
   const options = {
     method: 'post',
     headers: {
-      'Authorization': `Bearer ${LINE_TOKEN}`,
+      'Authorization': `Bearer ${getLineToken()}`,
       'Content-Type': 'application/json',
     },
     payload: JSON.stringify({
@@ -29,6 +26,26 @@ function sendLineMessage(targetId, message) {
     throw new Error(`Error sending message: ${response.getContentText()}`);
   }
 }
+
+function sendImageMessage(targetId, originalImageUrl, previewImageUrl) {
+  // パラメータバリデーション
+  if (!targetId) throw new Error('Target ID is required');
+  if (!originalImageUrl) throw new Error('Original image URL is required');
+  if (!previewImageUrl) throw new Error('Preview image URL is required');
+
+  // 画像メッセージオブジェクトの作成
+  const imageMessage = {
+    type: 'image',
+    originalContentUrl: originalImageUrl,
+    previewImageUrl: previewImageUrl
+  };
+
+  // 画像メッセージを送信する
+  sendLineMessage(targetId, imageMessage);
+}
+
+// 使用例
+sendImageMessage(getLineGroupId(), 'https://riversun.github.io/img/riversun_256.png', 'https://riversun.github.io/img/riversun_144.png');
 
 // 基本の送信の形式は以下のようになっている。
 // sendLineMessage(GROUP_ID, {

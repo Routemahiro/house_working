@@ -1,0 +1,1 @@
+// LINEAPIドキュメント：https://developers.line.biz/ja/reference/messaging-api/
