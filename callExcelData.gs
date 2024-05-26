@@ -13,7 +13,8 @@ function logMessageToSheet(sheetname,timestamp, userId, groupId, messageType, me
 }
   
 function loadBabyData() {
-  var ss = SpreadsheetApp.openById(SPREAD_SHEET_ID);
+  var spreadsheetId = getSpreadsheetId();
+  var ss = SpreadsheetApp.openById(spreadsheetId);
   var sheet = ss.getSheetByName('babyData');
   var birthDay = sheet.getRange('B1').getValue();
   var birthdayJST = Utilities.formatDate(new Date(birthDay), 'JST', 'yyyy/MM/dd');
@@ -28,7 +29,23 @@ function loadBabyData() {
 
   return {birthDay: birthdayJST, name: name, mother_name: mother_name, father_name: father_name, today: todayJST, daysSinceBirth: daysSinceBirth};
 }
-  
+
+function diaryToSheet(timestamp,  message) {
+    var spreadsheetId = getSpreadsheetId();
+    var ss = SpreadsheetApp.openById(spreadsheetId);
+    var sheetname = getDiaryLogSheetName();
+    var sheet = ss.getSheetByName(sheetname); 
+    
+    if (!sheet) {
+      sheet = ss.insertSheet(sheetname);
+      sheet.appendRow(['Date', 'Message']); // 列名を設定
+    }
+      
+    sheet.appendRow([timestamp, message]);
+
+  }
+
+
 function loadBabyLog(sheetname) {
   var spreadsheetId = getSpreadsheetId();
   var ss = SpreadsheetApp.openById(spreadsheetId);
@@ -46,3 +63,7 @@ function loadBabyLog(sheetname) {
 
   return filteredData;
 }
+
+
+
+

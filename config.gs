@@ -27,4 +27,15 @@ function getBabyLogSheetName() {
     return "ベビールーム"
 }
 
+function getHouseLogSheetName() {
+    return "お家ルーム"
+}
+
+function getDiaryLogSheetName() {
+    return "赤ちゃん日記"
+}
+
+function getImageSaveFolderId() {
+    return PropertiesService.getScriptProperties().getProperty('IMAGE_SAVE_FOLDER_ID');
+}
 

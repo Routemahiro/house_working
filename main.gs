@@ -25,13 +25,13 @@ function doPost(e) {
     });
 
     if (groupId === house_group_id) {
-      spreadSheetName = 'お家ルーム';
+      spreadSheetName = getHouseLogSheetName();
       sendLineMessage(groupId, {
         // 家事ルーム
         type: 'text',
         text: "るーむ：お家ルーム",
       });
-
+      logMessageToSheet(spreadSheetName, timestamp, userId, groupId, messageType, message);
     } else if (groupId === baby_group_id) {
       // Babyルーム
       spreadSheetName = getBabyLogSheetName();

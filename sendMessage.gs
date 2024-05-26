@@ -18,8 +18,8 @@ function sendLineMessage(targetId, message) {
       messages: [message], // 配列にすることで様々なメッセージタイプに対応
     }),
   };
-
-  const response = UrlFetchApp.fetch(LINE_API_URL, options);
+  var lineApiUrl = getLineApiUrl();
+  const response = UrlFetchApp.fetch(lineApiUrl, options);
 
   // エラーハンドリング
   if (response.getResponseCode() !== 200) {
@@ -28,6 +28,7 @@ function sendLineMessage(targetId, message) {
 }
 
 function sendImageMessage(targetId, originalImageUrl, previewImageUrl) {
+  // 画像サイズはoriginalが1024*1024 10MB previewが240*240 1MB
   // パラメータバリデーション
   if (!targetId) throw new Error('Target ID is required');
   if (!originalImageUrl) throw new Error('Original image URL is required');
@@ -44,12 +45,14 @@ function sendImageMessage(targetId, originalImageUrl, previewImageUrl) {
   sendLineMessage(targetId, imageMessage);
 }
 
+function sendImageTest(){
+  requestImageGeneration("electric cat")
+  const targetId = getHouseGroupId();
+  const imageUrl = 'https://drive.google.com/file/d/15AVefdwAWKdoUHmJmRQDX7OqSKrHkuDh/view?usp=sharing';
+  // const previewImageUrl = 'https://drive.google.com/file/d/15AVefdwAWKdoUHmJmRQDX7OqSKrHkuDh/view?usp=sharing';
+  const previewImageUrl = 'https://raw.githubusercontent.com/Routemahiro/house_working/main/12271810528_resized_240_0.png';
+  sendImageMessage(targetId, imageUrl, previewImageUrl);
+}
 // 使用例
-sendImageMessage(getLineGroupId(), 'https://riversun.github.io/img/riversun_256.png', 'https://riversun.github.io/img/riversun_144.png');
-
-// 基本の送信の形式は以下のようになっている。
-// sendLineMessage(GROUP_ID, {
-//   type: 'text',
-//   text: 'Hello, World!',
-// });
-
+// sendImageMessage(getHouseGroupId(), 'https://raw.githubusercontent.com/Routemahiro/house_working/main/12271810528_resized_1024_0.png',
+//  'https://raw.githubusercontent.com/Routemahiro/house_working/main/12271810528_resized_240_0.png');
