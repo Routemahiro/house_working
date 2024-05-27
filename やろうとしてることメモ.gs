@@ -16,5 +16,10 @@
 
 
 
+// 天気関連
+// https://www.jodc.go.jp/data_format/weather-code_j.html　を翻訳してリスト化
+// UV_INDEXの強さについての指標のページ：https://db.cger.nies.go.jp/gem/ja/uv/uv_index/outline/uvindex.html
+// UV_INDEXのリスト化
+// sendWeatherInformation()を改良して、毎日お天気の通知が出来るようにする
 
-// 
+// 日記から画像の生成をするっていう仕組みは出来たから、見た目とかそのあたりの要素を事前に入れられるようにしとこうかな。あとは、

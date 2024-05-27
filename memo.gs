@@ -10,6 +10,10 @@
 // 
 // 気象庁のAPIのエリアコードで参考にした：https://zenn.dev/inoue2002/articles/2e07da8d0ca9ca
 
+// open-meteo（天気のAPI）で参考にした：https://paiza.hatenablog.com/entry/2021/11/04/130000
+// open-meteoの公式ドキュメント（URLhttps://open-meteo.com/en/docs
+// WMO Weather interpretation codes（要するに、天候を表すコード）の参考ページ：https://www.jodc.go.jp/data_format/weather-code_j.html
+// UV_INDEXの強さについての指標のページ：https://db.cger.nies.go.jp/gem/ja/uv/uv_index/outline/uvindex.html
 
 // 【設定手順】
 // GCP紐づけ

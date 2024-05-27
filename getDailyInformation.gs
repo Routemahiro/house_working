@@ -1,45 +1,131 @@
-function buildForecastUrl(areaCode) {
-  return `https://www.jma.go.jp/bosai/forecast/data/forecast/${areaCode}.json`;
+function sendWeatherInformation() {
+
+    var spreadsheetId = getSpreadsheetId();
+    var ss = SpreadsheetApp.openById(spreadsheetId);
+    var sheet = ss.getSheetByName('babyData');
+    var latitude = sheet.getRange('B5').getValue();
+    var longitude = sheet.getRange('B6').getValue();
+    
+    const forecast = weatherData(latitude,longitude);  // 変数名を 'forecast' に変更
+    const houseGroupId = getHouseGroupId();
+    sendLineMessage(houseGroupId, {
+        type: 'text',
+        text: `${forecast}`
+    });
 }
 
-function fetchWeatherForecast(areaCode) {
-  const url = buildForecastUrl(areaCode);
-  const response = UrlFetchApp.fetch(url);
-  const json = JSON.parse(response.getContentText());
-  return json;
-}
+// https://api.open-meteo.com/v1/forecast?latitude=34.75789393&longitude=135.52940582&daily=weather_code,temperature_2m_max,temperature_2m_min,uv_index_max,precipitation_probability_max&timezone=Asia%2FTokyo
+// 上記のURLを利用すると、「weather_code」「temperature_2m_max」「temperature_2m_min」「uv_index_max」「precipitation_probability_max」が取得できる
+// latitudeとlongitudeを取得し、置き換える感じ
 
-function generateForecastText(weatherData) {
-  let forecastText = '';
-  const reportDate = weatherData[0].reportDatetime;
-  forecastText += `天気予報発表日時: ${reportDate}\n\n`;
+// function buildForecastUrl(areaCode) {
+//   return `https://www.jma.go.jp/bosai/forecast/data/forecast/${areaCode}.json`;
+// }
 
-  const timeSeries = weatherData[0].timeSeries[0];
-  const dates = timeSeries.timeDefines.slice(0, 3); // 直近3日間の日付を取得
-  const weathers = timeSeries.areas[0].weathers.slice(0, 3); // 直近3日間の天気を取得
+// function fetchWeatherForecast(areaCode) {
+//   const url = buildForecastUrl(areaCode);
+//   const response = UrlFetchApp.fetch(url);
+//   const json = JSON.parse(response.getContentText());
+//   return json;
+// }
 
-  dates.forEach((date, index) => {
-    forecastText += `${date}: ${weathers[index]}\n`;
-  });
+// function generateForecastText(weatherData) {
+//     let forecastText = '';
+//     const areaName = weatherData[0].timeSeries[0].areas[0].area.name;
+//     forecastText += `地域: ${areaName}\n\n`;
+  
+//     const timeSeries = weatherData[0].timeSeries;
+//     const dates = timeSeries[0].timeDefines.slice(1, 4);  // 明日から3日後までの日付を取得
+//     const weathers = timeSeries[0].areas[0].weathers.slice(1, 4);  // 明日から3日後までの天気を取得
+  
+//     dates.forEach((date, index) => {
+//       const formattedDate = formatDate(date);
+//       forecastText += `${formattedDate}:\n`;
+//       forecastText += `天気:\n ${weathers[index]}\n`;
 
-  return forecastText;
-}
+//       forecastText += '\n';
+//     });
+  
+//     return forecastText;
+// }
+  
+// function formatDate(isoString) {
+//     const date = new Date(isoString);
+//     return `${date.getFullYear()}年${date.getMonth() + 1}月${date.getDate()}日`;
+// }
 
-function weatherData(areaCode) {
-  try {
-    const weatherData = fetchWeatherForecast(areaCode);
-    const forecastText = generateForecastText(weatherData);
-    Logger.log(forecastText);
-    return forecastText;
-  } catch (error) {
-    Logger.log('エラーが発生しました: ' + error.toString());
-    return '天気情報の取得に失敗しました。';
-  }
-}
+// function weatherData(areaCode) {
+//   try {
+//     const weatherData = fetchWeatherForecast(areaCode);
+//     const forecastText = generateForecastText(weatherData);
+//     Logger.log(forecastText);
+//     return forecastText;
+//   } catch (error) {
+//     Logger.log('エラーが発生しました: ' + error.toString());
+//     return '天気情報の取得に失敗しました。';
+//   }
+// }
 
-function weatherTest() {
-  const areaCode = '270000';
-  const weatherData = weatherData(areaCode);
-  Logger.log(weatherData);
-}
+// function weatherTest() {
+//     const areaCode = '270000';
+//     const forecast = weatherData(areaCode);  // 変数名を 'forecast' に変更
+//     Logger.log(forecast);
+// }
 
+// function sendWeatherInformation() {
+
+//     var spreadsheetId = getSpreadsheetId();
+//     var ss = SpreadsheetApp.openById(spreadsheetId);
+//     var sheet = ss.getSheetByName('babyData');
+//     var areaCode = sheet.getRange('B5').getValue();
+//     const forecast = weatherData(areaCode);  // 変数名を 'forecast' に変更
+//     const houseGroupId = getHouseGroupId();
+//     sendLineMessage(houseGroupId, {
+//         type: 'text',
+//         text: `${forecast}`
+//     });
+// }
+
+
+
+
+
+
+
+// 取得できる情報多めだけど、精度に危うさ感じた。とりあえずメモくらいの気持ち
+// function generateForecastText(weatherData) {
+//     let forecastText = '';
+//     const areaName = weatherData[0].timeSeries[0].areas[0].area.name;
+//     forecastText += `地域: ${areaName}\n\n`;
+  
+//     const timeSeries = weatherData[0].timeSeries;
+//     const dates = timeSeries[0].timeDefines.slice(0, 3);
+//     const weathers = timeSeries[0].areas[0].weathers.slice(0, 3);
+//     const winds = timeSeries[0].areas[0].winds.slice(0, 3);
+//     const pops = timeSeries[1].areas[0].pops.slice(0, 3);
+  
+//     const tempsMin = timeSeries[1].areas[0].tempsMin ? timeSeries[1].areas[0].tempsMin.slice(1, 4) : [];
+//     const tempsMax = timeSeries[1].areas[0].tempsMax ? timeSeries[1].areas[0].tempsMax.slice(1, 4) : [];
+  
+//     dates.forEach((date, index) => {
+//       const formattedDate = formatDate(date);
+//       forecastText += `${formattedDate}:\n`;
+//       forecastText += `- 天気: ${weathers[index]}\n`;
+//       forecastText += `- 風: ${winds[index]}\n`;
+//       forecastText += `- 降水確率: ${pops[index]}%\n`;
+//       if (tempsMin.length > index) {
+//         forecastText += `- 最低気温: ${tempsMin[index]}°C\n`;
+//       }
+//       if (tempsMax.length > index) {
+//         forecastText += `- 最高気温: ${tempsMax[index]}°C\n`;
+//       }
+//       forecastText += '\n';
+//     });
+  
+//     return forecastText;
+// }
+  
+//   function formatDate(isoString) {
+//     const date = new Date(isoString);
+//     return `${date.getFullYear()}年${date.getMonth() + 1}月${date.getDate()}日`;
+// }

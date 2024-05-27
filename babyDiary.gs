@@ -70,15 +70,13 @@ function batchUpdateEntries(sheetName) {
 function createBabyDiaryWithImage() {
     var babyToday,diary = createBabyDiary(); //この段階で日記のテキスト送信される
 
-    var imageUrl = requestImageGeneration(diary);
-    const originalImageName = babyToday + "_original.png";
-    const resizedImageName = babyToday + "_resized.png";
+    var imageUrl = requestImageGeneration("「"+diary+"」\n括弧内の内容を参考に、画像の作成をしてください。画風は色鉛筆で書いたような感じ。温かみの感じられる優しい雰囲気のイラストに仕上げてください");
+    const imageName = babyToday + "_日記画像.png";
 
-    var sendUrl = saveImageToGoogleDrive(imageUrl,originalImageName);
-    var previewImageUrl = saveImageToGoogleDrive(imageUrl,resizedImageName);
+    var sendUrl = saveImageToGoogleDrive(imageUrl,imageName);
 
-
-    sendImageMessage(getBabyGroupId(), sendUrl, previewImageUrl);
+    // 本来はプレビュー用のサイズの画像が必要だけど、無理に用意しなくても表示できたから試しに
+    sendImageMessage(getBabyGroupId(), sendUrl, sendUrl);
 }
 
 // 生成された日記は専用のシートに書き込み OK

@@ -35,9 +35,10 @@ function calculateGarbageDay(date) {
 function checkAndNotifyGarbageDay() {
     const today = new Date();
     const garbageType = calculateGarbageDay(today);
+    const houseGroupId = getHouseGroupId();
 
     if (garbageType !== '今日はゴミ捨て日ではありません') {
-        sendLineMessage(HOUSE_GROUP_ID, {
+        sendLineMessage(houseGroupId, {
             type: 'text',
             text: `${garbageType}の日です。ゴミを出してください。`
         });
@@ -48,6 +49,7 @@ function checkAndNotifyGarbageDayReminder() {
     const tomorrow = new Date();
     tomorrow.setDate(tomorrow.getDate() + 1); // 明日の日付を取得
     const garbageType = calculateGarbageDay(tomorrow);
+    const houseGroupId = getHouseGroupId();
 
     let detail;
     switch (garbageType) {
@@ -64,7 +66,7 @@ function checkAndNotifyGarbageDayReminder() {
     }
 
     if (garbageType !== '今日はゴミ捨て日ではありません') {
-        sendLineMessage(HOUSE_GROUP_ID, {
+        sendLineMessage(houseGroupId, {
             type: 'text',
             text: `${garbageType}の前日です。ゴミ捨て準備を行いましょう。${detail}`
         }
