@@ -5,15 +5,51 @@ function sendWeatherInformation() {
     var sheet = ss.getSheetByName('babyData');
     var latitude = sheet.getRange('B5').getValue();
     var longitude = sheet.getRange('B6').getValue();
-    
-    const forecast = weatherData(latitude,longitude);  // 変数名を 'forecast' に変更
     const houseGroupId = getHouseGroupId();
+    // latitudeとlongitudeの両方に整数が入っている場合、次に進む。そうでない場合、関数を終了
+    if (isNaN(latitude) || isNaN(longitude)) {
+        return;
+    }
+
+    const forecast = weatherData(latitude,longitude,0);
+
     sendLineMessage(houseGroupId, {
         type: 'text',
         text: `${forecast}`
     });
 }
 
+function weatherData(latitude, longitude, dayOffset) {
+    const baseUrl = 'https://api.open-meteo.com/v1/forecast';
+    const params = {
+        latitude: latitude,
+        longitude: longitude,
+        daily: 'weather_code,temperature_2m_max,temperature_2m_min,sunrise,sunset,uv_index_max,uv_index_clear_sky_max,precipitation_hours,precipitation_probability_max,wind_speed_10m_max',
+        timezone: 'Asia/Tokyo'
+    };
+    const url = `${baseUrl}?latitude=${params.latitude}&longitude=${params.longitude}&daily=${params.daily}&timezone=${params.timezone}`;
+
+    const response = UrlFetchApp.fetch(url);
+    const data = JSON.parse(response.getContentText());
+
+    const dailyData = data.daily;
+    const index = dayOffset; // dayOffsetを使用して特定の日のデータを取得
+
+    const forecastText = `
+天気コード: ${dailyData.weather_code[index]}
+最高気温: ${dailyData.temperature_2m_max[index]}°C
+最低気温: ${dailyData.temperature_2m_min[index]}°C
+日の出: ${dailyData.sunrise[index]}
+日の入り: ${dailyData.sunset[index]}
+最大UV指数: ${dailyData.uv_index_max[index]}
+最大UV指数（晴天時）: ${dailyData.uv_index_clear_sky_max[index]}
+降水時間: ${dailyData.precipitation_hours[index]}時間
+最大降水確率: ${dailyData.precipitation_probability_max[index]}%
+最大風速: ${dailyData.wind_speed_10m_max[index]} km/h
+    `;
+
+    return forecastText.trim();
+}
 // https://api.open-meteo.com/v1/forecast?latitude=34.75789393&longitude=135.52940582&daily=weather_code,temperature_2m_max,temperature_2m_min,uv_index_max,precipitation_probability_max&timezone=Asia%2FTokyo
 // 上記のURLを利用すると、「weather_code」「temperature_2m_max」「temperature_2m_min」「uv_index_max」「precipitation_probability_max」が取得できる
 // latitudeとlongitudeを取得し、置き換える感じ
@@ -54,17 +90,7 @@ function sendWeatherInformation() {
 //     return `${date.getFullYear()}年${date.getMonth() + 1}月${date.getDate()}日`;
 // }
 
-// function weatherData(areaCode) {
-//   try {
-//     const weatherData = fetchWeatherForecast(areaCode);
-//     const forecastText = generateForecastText(weatherData);
-//     Logger.log(forecastText);
-//     return forecastText;
-//   } catch (error) {
-//     Logger.log('エラーが発生しました: ' + error.toString());
-//     return '天気情報の取得に失敗しました。';
-//   }
-// }
+
 
 // function weatherTest() {
 //     const areaCode = '270000';
